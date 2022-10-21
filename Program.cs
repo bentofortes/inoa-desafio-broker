@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using ApiHelper;
+using EmailHelper;
 
 namespace Inoa{
 
@@ -14,7 +15,10 @@ namespace Inoa{
                 Console.WriteLine("inoa-desafio-broker.exe <NOME_DO_ATIVO> <PRECO_LIMITE_INFERIOR> <PRECO_LIMITE_SUPERIOR>\n");
             }
 
-            await Requests.test(args[0]);
+            // await Requests.test(args[0]);
+
+            Email email = new Email();
+            email.sendEmail();
         }
     }
 }
