@@ -1,0 +1,6 @@
+{
+    "host": "email-smtp.us-east-1.amazonaws.com",
+    "sender": "clefairy.aws.test@gmail.com",
+    "recipient": "bentobentomaranhao@gmail.com",
+    "port": 587
+}

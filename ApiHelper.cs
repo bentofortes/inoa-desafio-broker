@@ -24,7 +24,7 @@ namespace ApiHelper
                 }
 
                 Price ?price = response?.quoteSummary?.result?[0].price;
-                Console.WriteLine("{0} {1, 25} {2, 25}",
+                Console.WriteLine("{0} {1, 20} {2, 20}",
                     DateTime.Now.ToString("G"),
                     price?.symbol,
                     price?.currencySymbol + " " + price?.regularMarketPrice?.raw);

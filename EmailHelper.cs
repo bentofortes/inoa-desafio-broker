@@ -11,9 +11,9 @@ namespace EmailHelper
         EmailType ?settings;
 
         public void readConfig(){
-            if (!File.Exists("credentials/config.json")) return;
+            if (!File.Exists("config.json")) return;
 
-            string aux = File.ReadAllText("credentials/config.json");
+            string aux = File.ReadAllText("config.json");
             settings = JsonSerializer.Deserialize<EmailType>(aux);
         }
 

@@ -1,4 +1,6 @@
-﻿using ApiHelper;
+﻿using System.Threading;
+
+using ApiHelper;
 
 namespace Inoa{
 
@@ -25,9 +27,11 @@ namespace Inoa{
             }
 
             await Requests.getPrice(args[0]);
-
-            // Email email = new Email();
-            // email.sendEmail();
+            while(true)
+            {
+                Thread.Sleep(5000);
+                await Requests.getPrice(args[0]);
+            }
         }
     }
 }
