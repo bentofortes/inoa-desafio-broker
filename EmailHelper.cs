@@ -1,37 +1,11 @@
 using System.Net;
 using System.Net.Mail;
-using System.Reflection;
 using System.Text.Json;
+
+using EmailTypes;
 
 namespace EmailHelper
 {
-    public class EmailType{
-        public string ?sender { get; set; }
-        public string ?recipient { get; set; }
-        public string ?subject { get; set; }
-        public string ?body { get; set; }
-
-        public int port { get; set; }
-        public string ?host { get; set; }
-        public string ?smtpUsername { get; set; }
-        public string ?smtpPassword { get; set; }
-
-        // public void writeBody(string assetName)
-        static public bool nullCheck(EmailType email)
-        {
-            foreach(PropertyInfo p in email.GetType().GetProperties())
-            {
-                Console.WriteLine(p.GetValue(email));
-                if (p.GetValue(email) == null)
-                {
-                    Console.WriteLine(p.Name + " is null");
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
     public class Email
     {
         EmailType ?settings;
@@ -55,13 +29,18 @@ namespace EmailHelper
             }
         }
 
-        public void sendEmail()
+        public void sendEmail(string assetName, int price, int max, int min)
         {
-            Console.WriteLine("Email sent1!");
             readConfig();
             readCredentials();
-            if (settings == null) return;
-            // if (!EmailType.nullCheck(settings)) return;
+
+            if (
+                // settings.subject == null ||
+                // settings.body == null ||
+                settings == null ||
+                settings.sender == null ||
+                settings.recipient == null
+            ) return;
 
             MailMessage email = new MailMessage();
             email.From = new MailAddress(settings.sender, "Desafio Inoa");

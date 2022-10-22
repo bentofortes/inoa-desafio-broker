@@ -1,44 +1,38 @@
-using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
+
+using ResponseTypes;
 
 namespace ApiHelper
 {
-    public class RequestResult
-    {
-        public bool valid_key { get; set; }
-        public string ?by { get; set; }
-        public class Price
-        {
-            
-        }
-    }
-
-    public class Result
-    {
-
-    }
-
     public class Requests
     {
-        public static async Task test(string asset)
+        public static async Task getPrice(string assetName)
         {
-            string key = File.ReadAllText("credentials/hg_key.txt");
             var client = new HttpClient();
-            string teste;
+            RequestResponse ?response;
             
-            teste = await client.GetStringAsync("https://api.hgbrasil.com/finance/stock_price?fields=valid_key&key=" + key + "&symbol=" + asset);
-            Console.WriteLine(teste);
-            teste = await client.GetStringAsync("https://api.hgbrasil.com/finance/stock_price?key=" + key + "&symbol=" + asset + "gsdfsdfd");
-            Console.WriteLine(teste);
-            teste = await client.GetStringAsync("https://api.hgbrasil.com/finance/stock_price?key=" + key + "&symbol=" + asset);
-            Console.WriteLine(teste);
-            teste = await client.GetStringAsync("https://api.hgbrasil.com/finance/stock_price?key=" + key + "&symbol=" + asset + "&from_cache=false");
-            Console.WriteLine(teste);
+            try
+            {
+                HttpResponseMessage request = await client.GetAsync($"https://query1.finance.yahoo.com/v11/finance/quoteSummary/{assetName}.sa?modules=price");
+                string responseString = await request.Content.ReadAsStringAsync();
 
-            RequestResult ?result = JsonSerializer.Deserialize<RequestResult>(teste);
-            Console.WriteLine(result?.GetType().GetProperties().Length);
+                response = JsonSerializer.Deserialize<RequestResponse>(responseString);
+                if (response?.quoteSummary?.error?.code == "Not Found")
+                {
+                    Console.WriteLine("Erro. Ativo nao encontrado\n");
+                    Environment.Exit(0);
+                }
 
+                Price ?price = response?.quoteSummary?.result?[0].price;
+                Console.WriteLine("{0} {1, 25} {2, 25}",
+                    DateTime.Now.ToString("G"),
+                    price?.symbol,
+                    price?.currencySymbol + " " + price?.regularMarketPrice?.raw);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }
