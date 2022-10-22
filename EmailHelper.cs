@@ -4,10 +4,8 @@ using System.Text.Json;
 
 using EmailTypes;
 
-namespace EmailHelper
-{
-    public class Email
-    {
+namespace EmailHelper{
+    public class Email{
         EmailType ?settings;
 
         public void readConfig(){
@@ -29,8 +27,7 @@ namespace EmailHelper
             }
         }
 
-        public void sendEmail(string assetName, int price, int max, int min)
-        {
+        public void sendEmail(string assetName, float ?price, float sell, float buy){
             readConfig();
             readCredentials();
 
@@ -43,18 +40,26 @@ namespace EmailHelper
             ) return;
 
             MailMessage email = new MailMessage();
-            email.From = new MailAddress(settings.sender, "Desafio Inoa");
+            email.From = new MailAddress(settings.sender, "Desafio Inoa Broker");
             email.To.Add(new MailAddress(settings.recipient));
-            email.Subject = "gsdfgsfgsdfsdfdsdfsdf";
-            email.Body = "AAAAAAAAAAAAAAAAAAAA";
+
+            if (price <= buy){
+                email.Subject = $"Preco de {assetName.ToUpper()} abaixo ou igual ao valor de compra definido.";
+                email.Body = @$"{DateTime.Now.ToString("G")}  -  No atual momento o preco do ativo {assetName.ToUpper()} eh {price}. O preco de compra definido foi de {buy}";
+            }
+            if (price >= sell){
+                email.Subject = $"Preco de {assetName.ToUpper()} acima ou igual ao valor de venda definido.";
+                email.Body = @$"{DateTime.Now.ToString("G")}  -  No atual momento o preco do ativo {assetName.ToUpper()} eh {price}. O preco de venda definido foi de {sell}";
+            }
 
 
-            using (var client = new System.Net.Mail.SmtpClient(settings.host, settings.port))
-            {
+            using (var client = new System.Net.Mail.SmtpClient(settings.host, settings.port)){
                 client.Credentials = new NetworkCredential(settings.smtpUsername, settings.smtpPassword);
                 client.EnableSsl = true;
                 client.Send(email);
-                Console.WriteLine("Email sent!");
+                Console.WriteLine("Email enviado");
+                Console.WriteLine($"Pressione Enter para continuar monitorando o ativo {assetName.ToUpper()} ou Ctrl+C para sair.");
+                Console.ReadLine();
             }
         }
     }
