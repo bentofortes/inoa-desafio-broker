@@ -8,8 +8,8 @@ namespace ApiHelper{
 
     public class Requests{
 
-        public float ?currentPrice;
-        public Price ?price;
+        public float ?currentPrice; //preco do ativo em reais
+        public Price ?price; //objeto de retorno da api yahoo
 
         public async Task getPrice(string assetName, float sellPrice, float buyPrice){
             var client = new HttpClient();
@@ -41,6 +41,7 @@ namespace ApiHelper{
             }
             catch (Exception ex){
                 Console.WriteLine(ex);
+                Environment.Exit(0);
             }
         }
     }

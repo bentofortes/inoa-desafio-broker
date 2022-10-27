@@ -9,14 +9,20 @@ namespace EmailHelper{
         EmailType ?settings;
 
         public void readConfig(){
-            if (!File.Exists("config.json")) return;
+            if (!File.Exists("config.json")){
+                Console.WriteLine("O arquivo config nao existe. Fechando o programa...");
+                Environment.Exit(0);
+            }
 
             string aux = File.ReadAllText("config.json");
             settings = JsonSerializer.Deserialize<EmailType>(aux);
         }
 
         public void readCredentials(){
-            if (!File.Exists("credentials/aws_ses_credentials.csv")) return;
+            if (!File.Exists("credentials/aws_ses_credentials.csv")){
+                Console.WriteLine("O arquivo das credenciais do email nao existe. Fechando o programa...");
+                Environment.Exit(0);
+            }
 
             string[] aux = File.ReadAllLines("credentials/aws_ses_credentials.csv");
             aux = aux[1].Split(",");
@@ -32,8 +38,6 @@ namespace EmailHelper{
             readCredentials();
 
             if (
-                // settings.subject == null ||
-                // settings.body == null ||
                 settings == null ||
                 settings.sender == null ||
                 settings.recipient == null
@@ -56,10 +60,17 @@ namespace EmailHelper{
             using (var client = new System.Net.Mail.SmtpClient(settings.host, settings.port)){
                 client.Credentials = new NetworkCredential(settings.smtpUsername, settings.smtpPassword);
                 client.EnableSsl = true;
-                client.Send(email);
-                Console.WriteLine("Email enviado");
-                Console.WriteLine($"Pressione Enter para continuar monitorando o ativo {assetName.ToUpper()} ou Ctrl+C para sair.");
-                Console.ReadLine();
+
+                try{
+                    client.Send(email);
+                    Console.WriteLine("Email enviado");
+                    Console.WriteLine($"Pressione Enter para continuar monitorando o ativo {assetName.ToUpper()} ou Ctrl+C para sair.");
+                    Console.ReadLine();
+                }
+                catch (Exception ex){
+                    Console.WriteLine(ex);
+                    Environment.Exit(0);
+                }
             }
         }
     }

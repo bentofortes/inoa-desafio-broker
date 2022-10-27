@@ -1,5 +1,4 @@
 ﻿using ApiHelper;
-using EmailHelper;
 
 
 namespace Inoa{
@@ -31,7 +30,7 @@ namespace Inoa{
 
             await worker.getPrice(args[0], float.Parse(args[1]), float.Parse(args[2]));
             while(true){
-                Thread.Sleep(5000);
+                Thread.Sleep(5000); // atualiza de 5 em 5 segundos o preco do ativo
                 await worker.getPrice(args[0], float.Parse(args[1]), float.Parse(args[2]));
             }
         }
